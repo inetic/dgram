@@ -24,8 +24,11 @@ def recv(l_ep):
     sock.bind(parse_ep(l_ep))
     
     while True:
-        data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-        print addr[0] + ":" + str(addr[1]) + " -> " + data
+        try:
+            data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+            print addr[0] + ":" + str(addr[1]) + " -> " + data
+        except KeyboardInterrupt:
+            break
 
 parser = argparse.ArgumentParser()
 
