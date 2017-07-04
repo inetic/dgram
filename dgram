@@ -1,0 +1,46 @@
+#!/usr/bin/python
+
+import socket
+import sys
+import argparse
+
+def parse_ep(s):
+    ip,port = s.split(':')
+    return (ip, int(port))
+
+def send(l_ep, r_ep, msg):
+    sock = socket.socket(socket.AF_INET, # Internet
+                         socket.SOCK_DGRAM) # UDP
+
+    if l_ep != None:
+        sock.bind(parse_ep(l_ep))
+
+    sock.sendto(msg, parse_ep(r_ep))
+
+def recv(l_ep):
+    sock = socket.socket(socket.AF_INET, # Internet
+                         socket.SOCK_DGRAM) # UDP
+
+    sock.bind(parse_ep(l_ep))
+    
+    while True:
+        data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+        print addr[0] + ":" + str(addr[1]) + " -> " + data
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-l', help="local endpoint")
+parser.add_argument('-r', help="remote endpoint")
+parser.add_argument('m', nargs='?', help="message to send")
+
+args = parser.parse_args()
+
+def usage():
+    print sys.argv[0] + " -r <IP> <PORT>        # to receive"
+    print sys.argv[0] + " <IP> <PORT> <MESSAGE> # to send"
+    exit(1)
+
+if args.m:
+    send(args.l, args.r, args.m)
+else:
+    recv(args.l)
