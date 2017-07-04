@@ -35,11 +35,6 @@ parser.add_argument('m', nargs='?', help="message to send")
 
 args = parser.parse_args()
 
-def usage():
-    print sys.argv[0] + " -r <IP> <PORT>        # to receive"
-    print sys.argv[0] + " <IP> <PORT> <MESSAGE> # to send"
-    exit(1)
-
 if args.m:
     send(args.l, args.r, args.m)
 else:
