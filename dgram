@@ -8,19 +8,23 @@ def parse_ep(s):
     ip,port = s.split(':')
     return (ip, int(port))
 
-def send(l_ep, r_ep, msg):
-    sock = socket.socket(socket.AF_INET, # Internet
+
+def make_socket():
+    return socket.socket(socket.AF_INET, # Internet
                          socket.SOCK_DGRAM) # UDP
+
+
+def send(l_ep, r_ep, msg):
+    sock = make_socket()
 
     if l_ep != None:
         sock.bind(parse_ep(l_ep))
 
     sock.sendto(msg, parse_ep(r_ep))
 
-def recv(l_ep):
-    sock = socket.socket(socket.AF_INET, # Internet
-                         socket.SOCK_DGRAM) # UDP
 
+def recv(l_ep):
+    sock = make_socket()
     sock.bind(parse_ep(l_ep))
     
     while True:
@@ -29,6 +33,7 @@ def recv(l_ep):
             print addr[0] + ":" + str(addr[1]) + " -> " + data
         except KeyboardInterrupt:
             break
+
 
 parser = argparse.ArgumentParser()
 
