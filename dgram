@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import socket
 import sys
@@ -20,7 +20,7 @@ def send(l_ep, r_ep, msg):
     if l_ep != None:
         sock.bind(parse_ep(l_ep))
 
-    sock.sendto(msg, parse_ep(r_ep))
+    sock.sendto(msg.encode('utf-8'), parse_ep(r_ep))
 
 
 def recv(l_ep):
@@ -30,13 +30,18 @@ def recv(l_ep):
     while True:
         try:
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-            print addr[0] + ":" + str(addr[1]) + " -> " + data
+            print(addr[0] + ":" + str(addr[1]) + " -> " + data.decode("utf-8"))
         except KeyboardInterrupt:
             break
 
 
 parser = argparse.ArgumentParser()
 
+# Receive packets
+# dgram -l 0.0.0.0:6666
+#
+# Send packet
+# dgram -r x.y.z.w:6666 "hello dgram"
 parser.add_argument('-l', help="local endpoint")
 parser.add_argument('-r', help="remote endpoint")
 parser.add_argument('m', nargs='?', help="message to send")
