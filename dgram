@@ -14,19 +14,10 @@ def make_socket():
                          socket.SOCK_DGRAM) # UDP
 
 
-def send(l_ep, r_ep, msg):
-    sock = make_socket()
-
-    if l_ep != None:
-        sock.bind(parse_ep(l_ep))
-
+def send(sock, l_ep, r_ep, msg):
     sock.sendto(msg.encode('utf-8'), parse_ep(r_ep))
 
-
-def recv(l_ep):
-    sock = make_socket()
-    sock.bind(parse_ep(l_ep))
-    
+def recv(sock, l_ep):
     while True:
         try:
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
@@ -49,6 +40,16 @@ parser.add_argument('m', nargs='?', help="message to send")
 args = parser.parse_args()
 
 if args.m:
-    send(args.l, args.r, args.m)
+    sock = make_socket();
+
+    if args.l != None:
+        sock.bind(parse_ep(args.l))
+
+    send(sock, args.l, args.r, args.m)
+
+    if args.l:
+        recv(sock, args.l)
 else:
-    recv(args.l)
+    sock = make_socket();
+    sock.bind(parse_ep(args.l))
+    recv(sock, args.l)
